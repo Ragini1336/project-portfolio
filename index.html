@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Modern Portfolio</title>
+<style>
+  /* Reset & base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    color: #eee;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  a {
+    color: #9f9fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover, a:focus {
+    color: #ffffff;
+  }
+
+  /* Container and layout */
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Navigation */
+  nav {
+    width: 100%;
+    background: #312f44dd;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  nav .container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 0;
+  }
+  nav a.nav-link {
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    color: #ccc;
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  nav a.nav-link:hover,
+  nav a.nav-link:focus {
+    color: #f3548b;
+    background-color: rgba(243,84,139,0.15);
+    outline: none;
+  }
+
+  /* Hero */
+  header.hero {
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 2rem;
+    background:
+      radial-gradient(circle at top left, #6a60f4aa, transparent 60%),
+      radial-gradient(circle at bottom right, #f3548bab, transparent 50%),
+      linear-gradient(135deg, #1f1c2c 0%, #312f44 100%);
+    color: #fff;
+    text-shadow: 1px 1px 8px rgba(0,0,0,0.7);
+  }
+  header.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  header.hero p {
+    font-size: 1.3rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    opacity: 0.85;
+  }
+  header.hero .btn-primary {
+    background: linear-gradient(45deg, #6a60f4, #f3548b);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 4px 15px rgba(243, 84, 139, 0.6);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+  header.hero .btn-primary:hover,
+  header.hero .btn-primary:focus {
+    box-shadow: 0 6px 25px rgba(243, 84, 139, 0.9);
+    transform: scale(1.05);
+  }
+
+  /* About */
+  section.about {
+    background: #312f44dd;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    border-radius: 20px;
+    margin: 4rem auto;
+    max-width: 1000px;
+  }
+  section.about .profile-pic {
+    flex: 1 1 250px;
+    max-width: 250px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(243, 84, 139, 0.7);
+    border: 3px solid #f3548b;
+  }
+  section.about .profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  section.about .about-text {
+    flex: 2 1 450px;
+    font-size: 1.1rem;
+    color: #dcdcf8;
+  }
+  section.about .about-text h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: #f3548b;
+  }
+
+  /* Portfolio */
+  section.portfolio {
+    max-width: 1200px;
+    padding: 2rem;
+    margin: 4rem auto;
+  }
+  section.portfolio h2 {
+    text-align: center;
+    color: #f3548b;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  .projects-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .project-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    cursor: pointer;
+    background: linear-gradient(135deg, #5e57e6 0%, #f3548b 100%);
+    color: white;
+  }
+  .project-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .project-card:hover img {
+    transform: scale(1.05);
+  }
+  .project-info {
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    transition: background 0.4s ease;
+  }
+  .project-card:hover .project-info {
+    background: rgba(243, 84, 139, 0.85);
+  }
+  .project-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  .project-info p {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* Skills */
+  section.skills {
+    background: #312f44dd;
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 900px;
+    margin: 4rem auto;
+    color: #eee;
+  }
+  section.skills h2 {
+    text-align: center;
+    color: #f3548b;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .skill-badge {
+    background: linear-gradient(45deg, #6a60f4, #f3548b);
+    padding: 0.8rem 1.4rem;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 3px 15px rgba(155, 93, 232, 0.5);
+    user-select: none;
+    color: white;
+    font-size: 1rem;
+    cursor: default;
+    transition: box-shadow 0.3s ease;
+  }
+  .skill-badge:hover {
+    box-shadow: 0 6px 20px rgba(243, 84, 139, 0.8);
+  }
+
+  /* Contact */
+  section.contact {
+    padding: 2rem;
+    margin: 4rem auto 6rem;
+    max-width: 700px;
+    background: #1f1c2cdd;
+    border-radius: 20px;
+  }
+  section.contact h2 {
+    color: #f3548b;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .contact-info {
+    color: #ccc;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  .contact-info a {
+    color: #9f9fff;
+    font-weight: 600;
+    word-break: break-word;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 600px) {
+    nav .container {
+      gap: 1rem;
+      justify-content: center;
+    }
+    header.hero h1 {
+      font-size: 2.5rem;
+    }
+    header.hero p {
+      font-size: 1rem;
+      max-width: 100%;
+    }
+    section.about {
+      flex-direction: column;
+      padding: 2rem 1rem;
+      max-width: 100%;
+    }
+    section.about .about-text {
+      flex: none;
+      max-width: 100%;
+      font-size: 1rem;
+    }
+    section.about .profile-pic {
+      margin: 0 auto 1.5rem;
+      max-width: 180px;
+    }
+    .project-card img {
+      height: 150px;
+    }
+    .skill-badge {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#home" class="nav-link" onclick="event.preventDefault(); document.getElementById('home').scrollIntoView({behavior:'smooth'});">Home</a>
+    <a href="#about" class="nav-link" onclick="event.preventDefault(); document.getElementById('about').scrollIntoView({behavior:'smooth'});">About Me</a>
+    <a href="#portfolio" class="nav-link" onclick="event.preventDefault(); document.getElementById('portfolio').scrollIntoView({behavior:'smooth'});">Portfolio</a>
+    <a href="#skills" class="nav-link" onclick="event.preventDefault(); document.getElementById('skills').scrollIntoView({behavior:'smooth'});">Skills</a>
+    <a href="#contact" class="nav-link" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior:'smooth'});">Contact</a>
+  </div>
+</nav>
+
+<header id="home" class="hero">
+  <h1>Hello, I'm Ragini</h1>
+  <p>Creative Front-End Developer & Designer Crafting Beautiful Digital Experiences</p>
+  <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact Me</button>
+</header>
+
+<main class="container">
+
+  <section class="about" id="about">
+    <div class="profile-pic" aria-label="Profile picture of Jane Doe">
+        <img src="https://images.picxy.com/cache/2020/8/23/22e41b8bf58b38e15b0c2cd373cb4cc5.jpg?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80" alt="Jane Doe smiling" />"
+    </div>
+    <div class="about-text">
+      <h2>About Me</h2>
+      <p>Passionate about crafting sleek, modern websites and intuitive user experiences. Skilled in HTML, CSS, and responsive design with a keen eye for aesthetics and detail. Always eager to learn the latest web technologies to create impactful projects.</p>
+      <p>I enjoy collaborating on creative projects that challenge me to push the limits of design and code. Let’s build something amazing together.</p>
+    </div>
+  </section>
+
+  <section class="portfolio" id="portfolio">
+    <h2>Portfolio</h2>
+    <div class="projects-grid" role="list">
+      <article class="project-card" role="listitem" tabindex="0" aria-label="Project: Creative Landing Page">
+        <img src="https://images.picxy.com/cache/2020/8/23/22e41b8bf58b38e15b0c2cd373cb4cc5.jpg?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80" alt="Jane Doe smiling" />"
+        <div class="project-info">
+          <h3>Creative Landing Page</h3>
+          <p>Responsive marketing landing page with modern animations and dark mode.</p>
+        </div>
+      </article>
+
+      <article class="project-card" role="listitem" tabindex="0" aria-label="Project: E-commerce Website">
+        <img src="https://images.picxy.com/cache/2020/8/23/22e41b8bf58b38e15b0c2cd373cb4cc5.jpg?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80" alt="Jane Doe smiling" />"
+        <div class="project-info">
+          <h3>E-commerce Website</h3>
+          <p>Fully responsive store with shopping cart and payment integration.</p>
+        </div>
+      </article>
+
+      <article class="project-card" role="listitem" tabindex="0" aria-label="Project: Portfolio Redesign">
+        <img src="https://images.picxy.com/cache/2020/8/23/22e41b8bf58b38e15b0c2cd373cb4cc5.jpg?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=400&amp;q=80" alt="Jane Doe smiling" />"
+        <div class="project-info">
+          <h3>Portfolio Redesign</h3>
+          <p>A fresh and sleek redesign with custom animations and light/dark themes.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="skills" id="skills">
+    <h2>Skills</h2>
+    <div class="skills-list" aria-label="List of skills">
+      <span class="skill-badge" tabindex="0" aria-label="Skill: HTML">HTML</span>
+      <span class="skill-badge" tabindex="0" aria-label="Skill: CSS3">CSS3</span>
+      <span class="skill-badge" tabindex="0" aria-label="Skill: Python">Python</span>
+      <span class="skill-badge" tabindex="0" aria-label="Skill: Java">Java</span>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Contact Me</h2>
+    <p class="contact-info">Feeling inspired? Reach out to me via email:</p>
+    <p class="contact-info" aria-label="Email address"><a href="mailto:raginishivashetti@gmail.com">raginishivashetti@gmail.com</a></p>
+  </section>
+
+</main>
+
+</body>
+</html>
+
